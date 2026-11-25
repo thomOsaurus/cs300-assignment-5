@@ -8,6 +8,7 @@ export default function BookSearch() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
+      let ignore = false;
         fetch(`${import.meta.env.BASE_URL}data/books.json`)
             .then((response) => {
               if (!response.ok) {
@@ -16,14 +17,23 @@ export default function BookSearch() {
               return response.json();  
             })
             .then((data) => {
+              if (!ignore) {
                setBooks(data);
+              } 
             })
             .catch((err) => {
+               if (!ignore) { 
                setError(err.message);
+               } 
             })
             .finally(() => {
+                if (!ignore) {
                 setLoading(false);
+                }
             });
+         return () => {
+            ignore = true;
+         };   
     }, []);
     
     const filteredBooks = books.filter((book) => 

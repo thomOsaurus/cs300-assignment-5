@@ -5,8 +5,13 @@ export default function BookList() {
     const [books, setBooks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [retryCount, setRetryCount] = useState(0);
     
     useEffect(() => {
+        let ignore = false;
+
+        setLoading(true);
+        setError(null);
       fetch(`${import.meta.env.BASE_URL}data/books.json`)  
        .then((response) => {
         if (!response.ok) {
@@ -15,21 +20,40 @@ export default function BookList() {
         return response.json();
        })
        .then((data) => {
+         if (!ignore) {
           setBooks(data);
+         } 
        })
        .catch((err) => {
-        setError(err.message);
+          if (!ignore) {
+            setError(err.message);
+        }
        })
        .finally(() => {
+          if (!ignore) {
         setLoading(false);
+          }
        });
-    }, []);
+
+       return () => {
+        ignore = true;
+       };
+    }, [retryCount]);
 
     if(loading) {
        return <p role="status">Loading books...</p>;
     }
     if (error) {
-       return <p role="alert">{error}</p>; 
+       return (
+        <section>
+            <p role="alert">{error}</p>
+            <button
+               onClick={() => setRetryCount(count => count + 1)}
+            >
+                Retry
+                </button>
+            </section>
+       );    
     }
     if (books.length === 0) {
        return <p>No books found.</p>;

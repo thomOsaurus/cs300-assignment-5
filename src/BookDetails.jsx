@@ -9,6 +9,7 @@ export default function BookDetails() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
+        let ignore = false;
         setLoading(true);
         setError(null);
 
@@ -23,14 +24,23 @@ export default function BookDetails() {
               const selectedBook = data.find(
                 (book) => book.id === id
               );
-              setBook(selectedBook || null);
+              if (!ignore) {
+                setBook(selectedBook || null);
+              }  
             })
             .catch((err) => {
+               if (!ignore) {
                 setError(err.message);
+               } 
             })
             .finally(() => {
+                if (!ignore) {
                 setLoading(false);
+                } 
             });
+            return () => {
+                ignore = true;
+            };
     }, [id]);
         if (loading) {
             return <p role="status">Loading book...</p>;
