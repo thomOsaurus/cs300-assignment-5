@@ -1,5 +1,6 @@
 import BookList from "./BookList.jsx";
-import BookDetails from "./BookDetails.jsx"
+import BookDetails from "./BookDetails.jsx";
+import BookSearch from "./BookSearch.jsx"
 import { Routes, Route, Link, Navigate } from "react-router";
 import "./styles.css";
 
@@ -17,7 +18,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/books" replace />} />
         <Route path="/books" element={<BookList />} />
-        <Route path="/search" element={<h2>Search Books</h2>} />
+        <Route path="/search" element={<BookSearch />} />
         <Route path="/books/:id" element={<BookDetails />} />
         <Route path="*" element={
           <div>
